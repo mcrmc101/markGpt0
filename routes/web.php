@@ -17,6 +17,7 @@ use Inertia\Inertia;
 |
 */
 
+/*
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -25,10 +26,9 @@ Route::get('/', function () {
         'phpVersion' => PHP_VERSION,
     ]);
 });
+*/
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/', [ChatController::class, 'getHomePage'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::controller(ChatController::class)->prefix('chat')->group(function ($router) {
         $router->post('/seek-wisdom', 'seekWisdom')->name('wisdom.seek');
+        $router->get('/get-new-greeting', 'getNewGreeting')->name('greeting.new');
     });
 });
 
