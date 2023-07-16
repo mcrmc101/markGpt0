@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::controller(ChatController::class)->prefix('chat')->group(function ($router) {
         $router->post('/seek-wisdom', 'seekWisdom')->name('wisdom.seek');
         $router->get('/get-new-greeting', 'getNewGreeting')->name('greeting.new');
+        $router->get('test', 'test')->name('test');
     });
 });
 

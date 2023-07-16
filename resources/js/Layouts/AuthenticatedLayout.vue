@@ -13,7 +13,7 @@ const showingNavigationDropdown = ref(false);
 <template>
     <div>
         <div class="min-h-screen bg-neutral-100 dark:invert">
-            <nav class="bg-white border-b border-gray-100">
+            <nav class="bg-white border-b border-gray-100 sticky top-0 z-50">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -115,9 +115,16 @@ const showingNavigationDropdown = ref(false);
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main class="min-h-screen"
+                style="background-image: url('img/spin.svg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+
                 <slot />
             </main>
+            <footer class="bg-white fixed inset-x-0 bottom-0" v-if="$slots.footer">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    <slot name="footer" />
+                </div>
+            </footer>
         </div>
     </div>
 </template>

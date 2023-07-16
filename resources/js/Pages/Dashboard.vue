@@ -1,70 +1,100 @@
 <script setup>
-import SecondaryButton from '@/Components/SecondaryButton.vue';
 import ToggleDarkMode from '@/Components/ToggleDarkMode.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { onMounted } from 'vue';
-import { ref } from 'vue';
+import { ref, watch, nextTick } from 'vue';
 
 
-const query = ref();
+const query = ref('');
+const textarea = ref();
 const greeting = ref();
+const buttontext = ref();
 const result = ref('');
+const error = ref('');
 
 const getNewGreeting = () => {
     axios.get(route('greeting.new'))
         .then((res) => {
-            greeting.value = res.data;
+            greeting.value = res.data.greeting;
+            buttontext.value = res.data.button;
         })
         .catch((err) => {
             console.log(err);
         });
 };
 
+watch(query, () => {
+    textarea.value.style.height = 'auto';
+
+    nextTick(() => {
+        textarea.value.style.height = textarea.value.scrollHeight + 'px';
+    });
+});
+
 const submitForm = () => {
     axios.post(route('wisdom.seek', { query: query.value }))
-        .then((res) => { console.log(res.data); })
-        .catch((err) => { console.log(err); });
+        .then((res) => {
+            var msg = res.data.message;
+            result.value = msg;
+            speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
+            query.value = '';
+            getNewGreeting();
+        })
+        .catch((err) => {
+            console.log(err);
+            error.value = 'Rate Limit has been abused!';
+        });
+};
+
+const test = () => {
+    axios.get(route('test')).then((res) => { console.log(res.data); }).catch((err) => {
+        console.log(err);
+    });
 };
 
 
 
+
 onMounted(() => {
+
     getNewGreeting();
-    //console.log(greeting);
 });
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="markGPT" />
 
     <AuthenticatedLayout>
-        <template #header>
 
-            <ToggleDarkMode />
-        </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8 text-center justify-items-center">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-8 items-center my-auto">
                     <form @submit.prevent="submitForm()">
-                        <div class="form-control w-full text-center mx-auto">
-                            <label class="label">
-                                <span class="label-text text-2xl">{{ greeting }}</span>
-                            </label>
-                            <input type="text" placeholder="Type here" class="input input-bordered w-full"
-                                v-model="query" />
-                            <label class="label">
 
-                            </label>
-                        </div>
-                        <button class="btn btn-success" type="submit">Submit</button>
+
+
+
+                        <textarea ref="textarea" :placeholder="greeting" class="textarea textarea-bordered w-full"
+                            v-model="query"></textarea>
+                        <button class="btn btn-success my-2" type="submit">{{ buttontext }}</button>
+
+                        <label class="label">
+                            <span v-if="error" class="label-text text-error dark:invert">{{ error }}</span>
+                        </label>
 
                     </form>
-                    <p v-html="result"></p>
+                    <p v-html="result" class="font-bold mx-auto"></p>
                 </div>
             </div>
         </div>
+        <template #footer>
+
+            <ToggleDarkMode />
+
+            <button class="btn btn-warning" @click.prevent="test()">Test!!!</button>
+        </template>
     </AuthenticatedLayout>
 </template>

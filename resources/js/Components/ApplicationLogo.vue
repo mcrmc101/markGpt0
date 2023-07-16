@@ -24,7 +24,7 @@
 
 .spinMe {
     animation-name: spin;
-    animation-duration: 8000ms;
+    animation-duration: 10000ms;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
