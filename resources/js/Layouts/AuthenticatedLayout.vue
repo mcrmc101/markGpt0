@@ -114,9 +114,11 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </header>
 
-            <!-- Page Content -->
+            <!-- Page Content 
             <main class="min-h-screen"
                 style="background-image: url('img/spin.svg'); background-position: center; background-repeat: no-repeat; background-size: cover;">
+            -->
+            <main class="mb-auto ">
 
                 <slot />
             </main>

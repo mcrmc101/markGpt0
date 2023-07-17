@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex, nofollow">
 
     <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
@@ -17,7 +18,7 @@
     @inertiaHead
 </head>
 
-<body class="font-mono font-bold antialiased fade-in">
+<body class="font-mono font-bold subpixel-antialiased fade-in brightness-95">
     @inertia
 </body>
 

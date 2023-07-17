@@ -15,23 +15,32 @@ class ChatController extends Controller
     public function getAGreeting()
     {
         $greetings = collect([
-            'What do you want?',
-            'What can I do for you?',
-            'Not you again.',
-            'How can I help?',
-            'Is it time for dinner yet?',
-            'Are we there yet?',
-            'What do you want to know?'
+            "What do you want?",
+            "What can I do for you?",
+            "Not you again.",
+            "How can I help?",
+            "Is it time for dinner yet?",
+            "Are we there yet?",
+            "What do you want to know?",
+            "What now?",
+            "Ask me a question!",
+            "Speak, mortal.",
+            "Say it, don't spray it!",
+            "That's my name, don't wear it out."
         ]);
 
         $buttons = collect([
-            'Click Me!',
-            'Submit your Query!',
-            'Ask me anything!',
-            'Enquire after Knowledge!',
-            'Probe The Truth!',
-            'Seek Answers!',
-            'Scrutinize All!'
+            "Click",
+            "Submit",
+            "Ask",
+            "Enquire",
+            "Probe",
+            "Seek",
+            "Scrutinize",
+            "Parse",
+            "Analyze",
+            'Uncover',
+            'Reveal'
         ]);
         return response()->json([
             'greeting' => $greetings->random(),
@@ -54,27 +63,35 @@ class ChatController extends Controller
     public function seekWisdom(Request $request)
     {
         $query = $request->input('query');
-
-        $yourApiKey = env('OPENAI_API_KEY');
-        $client = OpenAI::client($yourApiKey);
-
+        /*
+        $result = OpenAI::completions()->create([
+            'model' => 'text-davinci-003',
+            'prompt' => 'PHP is',
+        ]);
+        */
+        //  $result = OpenAI::models()->list();
+        /*
         $result = $client->completions()->create([
             'model' => 'gpt-3.5-turbo',
             'prompt' => 'Say this is a test',
             //'max_tokens' => 6,
             'temperature' => 0
         ]);
+*/
 
-        /*
         $result = OpenAI::completions()->create([
             'model' => 'text-davinci-003',
             'prompt' => 'PHP is',
             'temperature' => 0
         ]);
-        */
+
+
+        //$response = $client->models()->list();
+        return response()->json(['message' => $result->toArray()]);
+        /*
         Log::debug($result['choices'][0]['text']);
         return response()->json(['message' => $result['choices'][0]['text']]);
-
+*/
         //  return response()->json(['message' => $query]);
     }
 
