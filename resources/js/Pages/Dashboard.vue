@@ -49,9 +49,9 @@ const submitForm = () => {
     }
     axios.post(route('wisdom.seek', { query: query.value }))
         .then((res) => {
-            msg = res.data.message.data;
+            msg = res.data.message;
             result.value = msg;
-            console.log(chatHistory.value);
+            console.log(res.data.message);
             // speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
             chatHistory.value.push({ sender: 'user', text: query.value, type: 'm' });
             chatHistory.value.push({ sender: 'bot', text: msg, type: 'm' });
@@ -96,10 +96,10 @@ onMounted(() => {
         <div class="py-6">
             <div class="container px-4 mx-auto mb-auto">
                 <div class="bg-white shadow-sm sm:rounded-lg p-4 md:p-8 items-center my-auto">
-                    <div v-if="result.length > 0 || error">
+                    <div v-if="result || error">
 
                         <!--Results-->
-                        <template v-if="result.length > 0">
+                        <template v-if="result">
                             <div v-for="(chat, index) in chatHistory" :key="index" class="">
                                 <div class="fade-in" :class="['chat', chat.sender === 'user' ? 'chat-start' : 'chat-end']">
                                     <div v-if="chat.sender === 'bot'" class="chat-image avatar">

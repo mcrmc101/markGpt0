@@ -78,20 +78,35 @@ class ChatController extends Controller
             'temperature' => 0
         ]);
 */
-
+        /*
         $result = OpenAI::completions()->create([
             'model' => 'text-davinci-003',
-            'prompt' => 'PHP is',
-            'temperature' => 0
+            'prompt' => $query,
+            'temperature' => 0.5
+        ]);
+        */
+        $result = OpenAI::chat()->create([
+            'model'    => 'gpt-3.5-turbo',
+            'messages' => [
+                ['role' => 'user', 'content' => $query],
+            ],
         ]);
 
 
         //$response = $client->models()->list();
-        return response()->json(['message' => $result->toArray()]);
-        /*
-        Log::debug($result['choices'][0]['text']);
-        return response()->json(['message' => $result['choices'][0]['text']]);
-*/
+        //  return response()->json(['message' => $result->toArray()]);
+        Log::debug($result->toArray());
+        $answers = collect([]);
+        foreach ($result->choices as $r) {
+            //$result->index; // 0
+            //$result->message->role; // 'assistant'
+            $answers->push($r->message->content); // '\n\nHello there! How can I assist you today?'
+            // $result->finishReason; // 'stop'
+        }
+        return response()->json(['message' => $answers->first()]);
+        //Log::debug($result['choices'][0]['text']);
+        //return response()->json(['message' => $result['choices'][0]['text']]);
+
         //  return response()->json(['message' => $query]);
     }
 
