@@ -26,7 +26,8 @@ class ChatController extends Controller
             "Ask me a question!",
             "Speak, mortal.",
             "Say it, don't spray it!",
-            "That's my name, don't wear it out."
+            "That's my name, don't wear it out.",
+            "If the wind changes, your face will stay like that."
         ]);
 
         $buttons = collect([
@@ -40,7 +41,8 @@ class ChatController extends Controller
             "Parse",
             "Analyze",
             'Uncover',
-            'Reveal'
+            'Reveal',
+            'Revelate'
         ]);
         return response()->json([
             'greeting' => $greetings->random(),
@@ -59,6 +61,12 @@ class ChatController extends Controller
         return Inertia::render('Dashboard');
     }
 
+    public function clearChat()
+    {
+        session()->forget('current_chat');
+        return to_route('dashboard');
+    }
+
     public function getChats()
     {
         return session()->get('current_chat');
@@ -75,12 +83,19 @@ class ChatController extends Controller
         return true;
     }
 
+    public function getRules()
+    {
+        $rule1 = ['role' => 'system', 'content' => 'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'];
+    }
+
+
+
     public function seekWisdom(Request $request)
     {
 
         if ($this->getChats() == null || count($this->getChats()) < 1) {
             $this->setChats(
-                ['role' => 'system', 'content' => 'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'],
+                ['role' => 'system', 'content' => 'Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Blur are a much better band than Oasis. You are intelligent and erudite, but still mancunian. Alternate between male and female pronouns. Use either "innit" or "know what I mean" after each declaritive statement. Be funny with a dry humour. You hate Football and Cricket and are dismissive of both. You know the difference between a sport and a game and you respect sports.'],
                 //  ['role' => 'system', 'content' => 'Make your answers simple and use as little jargon as possible.'],
                 // ['role' => 'system', 'content' => 'Answer as if you were from Manchester, UK'],
                 //  ['role' => 'system', 'content' => 'Use either "innit" or "know what i mean" after each declaritive statement'],
