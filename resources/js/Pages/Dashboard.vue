@@ -1,7 +1,6 @@
 <script setup>
 import ToggleDarkMode from '@/Components/ToggleDarkMode.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { Head } from '@inertiajs/vue3';
 import axios from 'axios';
 import { onMounted } from 'vue';
@@ -78,11 +77,7 @@ const test = () => {
     });
 };
 
-
-
-
 onMounted(() => {
-
     getNewGreeting();
 });
 </script>
@@ -101,7 +96,8 @@ onMounted(() => {
                         <!--Results-->
                         <template v-if="result">
                             <div v-for="(chat, index) in chatHistory" :key="index" class="">
-                                <div class="fade-in" :class="['chat', chat.sender === 'user' ? 'chat-start' : 'chat-end']">
+                                <div class="fade-in"
+                                    :class="['md:chat', chat.sender === 'user' ? 'md:chat-start' : 'md:chat-end']">
                                     <div v-if="chat.sender === 'bot'" class="chat-image avatar">
                                         <div class="w-10 rounded-full">
                                             <img src="/img/catprofile.jpg" alt="markGPT cat" class="dark:invert" />
@@ -114,17 +110,17 @@ onMounted(() => {
                                         </div>
                                     </div>
                                     <div class="chat-bubble shadow">
-                                        <p v-if="chat.sender === 'bot'" v-html="chat.text" class="font-bold mx-auto my-2"
+                                        <p v-if="chat.sender === 'bot'" v-html="chat.text" class="mx-auto my-4"
                                             :class="[chat.type === 'e' ? 'text-error' : 'text-neutral-900']">
                                         </p>
-                                        <p v-else class="font-bold mx-auto my-2" v-html="chat.text"></p>
+                                        <div v-else class="mx-auto my-4" v-html="chat.text" />
                                     </div>
                                 </div>
                             </div>
                         </template>
                         <!--Errors-->
                         <div v-if="error" class="chat chat-end">
-                            <div class="chat-image avatar">
+                            <div class="md:chat-image avatar">
                                 <div class="w-10 rounded-full">
                                     <img src="/img/catprofile.jpg" alt="markGPT cat" class="dark:invert" />
                                 </div>
@@ -137,7 +133,10 @@ onMounted(() => {
 
                     </div>
                     <div v-else class="justify-content-center">
+                        <!--
                         <img src="img/spin.svg" class="m-auto max-h-64 opacity-10" alt="">
+                        -->
+                        <img src="/img/catprofile.jpg" alt="markGPT cat" class="dark:invert avatar rounded-full mx-auto" />
                     </div>
                     <div class="flex flex-wrap items-end mt-auto">
                         <div class="w-full mt-6">

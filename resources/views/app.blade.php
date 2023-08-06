@@ -18,7 +18,7 @@
     @inertiaHead
 </head>
 
-<body class="font-mono font-bold subpixel-antialiased fade-in brightness-95">
+<body class="font-sans subpixel-antialiased fade-in brightness-95">
     @inertia
 </body>
 

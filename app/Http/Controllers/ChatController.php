@@ -59,55 +59,47 @@ class ChatController extends Controller
         return Inertia::render('Dashboard');
     }
 
+    public function getChats()
+    {
+        return session()->get('current_chat');
+    }
+
+    public function setChats($chat)
+    {
+        $chats = session()->get('current_chat');
+        if ($chats == null) {
+            $chats = [];
+        }
+        array_push($chats, $chat);
+        session()->put('current_chat', $chats);
+        return true;
+    }
 
     public function seekWisdom(Request $request)
     {
+
+        if ($this->getChats() == null || count($this->getChats()) < 1) {
+            $this->setChats(
+                ['role' => 'system', 'content' => 'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Answer as if you were from Manchester, UK. Use either "innit" or "know what i mean" after each declaritive statement'],
+                //  ['role' => 'system', 'content' => 'Make your answers simple and use as little jargon as possible.'],
+                // ['role' => 'system', 'content' => 'Answer as if you were from Manchester, UK'],
+                //  ['role' => 'system', 'content' => 'Use either "innit" or "know what i mean" after each declaritive statement'],
+            );
+        }
         $query = $request->input('query');
-        /*
-        $result = OpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => 'PHP is',
-        ]);
-        */
-        //  $result = OpenAI::models()->list();
-        /*
-        $result = $client->completions()->create([
-            'model' => 'gpt-3.5-turbo',
-            'prompt' => 'Say this is a test',
-            //'max_tokens' => 6,
-            'temperature' => 0
-        ]);
-*/
-        /*
-        $result = OpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $query,
-            'temperature' => 0.5
-        ]);
-        */
+        $this->setChats(['role' => 'user', 'content' => $query]);
+        $chats = $this->getChats();
+        //  Log::debug($chats);
         $result = OpenAI::chat()->create([
             'model'    => 'gpt-3.5-turbo',
-            'messages' => [
-                ['role' => 'user', 'content' => $query],
-            ],
+            'messages' => $chats,
         ]);
-
-
-        //$response = $client->models()->list();
-        //  return response()->json(['message' => $result->toArray()]);
-        Log::debug($result->toArray());
         $answers = collect([]);
         foreach ($result->choices as $r) {
-            //$result->index; // 0
-            //$result->message->role; // 'assistant'
-            $answers->push($r->message->content); // '\n\nHello there! How can I assist you today?'
-            // $result->finishReason; // 'stop'
+            $answers->push($r->message->content);
         }
+        $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
         return response()->json(['message' => $answers->first()]);
-        //Log::debug($result['choices'][0]['text']);
-        //return response()->json(['message' => $result['choices'][0]['text']]);
-
-        //  return response()->json(['message' => $query]);
     }
 
     public function test($text)
