@@ -94,7 +94,7 @@ class ChatController extends Controller
         // Log::debug($user->options['manc']);
         $rule1 = 'You are an ai assistant for ' . $user->name . '. You are here to assist them with anything they require. ';
         if ($options['manc'] == 1) {
-            $rule2 = 'Answer as if you were from Manchester, UK, but do not sound like a member of Oasis, John Cooper Clarke or an old man. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
+            $rule2 = 'Answer as if you were from Manchester, UK. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
         } else {
             $rule2 = '';
         }
@@ -109,7 +109,7 @@ class ChatController extends Controller
         } else {
             $rule4 = '';
         }
-        return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4 . ' You hate Football. You hate Cricket. Blur are better than Oasis. New Order and James are the best Manchester bands'];
+        return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4 . ' You hate Football. You hate Cricket. Blur are better than Oasis. New Order and James are the best Manchester bands. Keep any negative statements as short as possible. Never apologise.'];
 
         /*
         'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'
