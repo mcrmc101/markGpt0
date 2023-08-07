@@ -1,9 +1,13 @@
 <script setup>
+import Options from '@/Components/Mgpt/Options.vue';
 import ToggleDarkMode from '@/Components/ToggleDarkMode.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, router } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref, watch, nextTick, onMounted } from 'vue';
+import VueMarkdown from 'vue-markdown-render';
+
+
 
 
 const query = ref('');
@@ -14,6 +18,8 @@ const result = ref('');
 const error = ref('');
 const loading = ref(false);
 const chatHistory = ref([]);
+
+
 
 const getNewGreeting = () => {
     axios.get(route('greeting.new'))
@@ -28,7 +34,6 @@ const getNewGreeting = () => {
 
 watch(query, () => {
     textarea.value.style.height = 'auto';
-
     nextTick(() => {
         textarea.value.style.height = textarea.value.scrollHeight + 'px';
     });
@@ -49,8 +54,8 @@ const submitForm = () => {
         .then((res) => {
             msg = res.data.message;
             result.value = msg;
-            console.log(res.data.message);
-            // speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
+            // console.log(res.data.message);
+            //speechSynthesis.speak(new SpeechSynthesisUtterance(msg));
             chatHistory.value.push({ sender: 'user', text: query.value, type: 'm' });
             chatHistory.value.push({ sender: 'bot', text: msg, type: 'm' });
             query.value = '';
@@ -87,8 +92,6 @@ onMounted(() => {
     <Head title="markGPT" />
 
     <AuthenticatedLayout>
-
-
         <div class="py-6">
             <div class="container px-4 mx-auto mb-auto">
                 <div class="bg-white shadow-sm sm:rounded-lg p-4 md:p-8 items-center my-auto">
@@ -97,7 +100,7 @@ onMounted(() => {
 
                         <!--Results-->
                         <template v-if="result">
-                            <div v-for="(chat, index) in chatHistory" :key="index" class="my-4">
+                            <div v-for="(chat, index) in chatHistory" :key="index" class="my-6">
                                 <div class="fade-in"
                                     :class="['md:chat', chat.sender === 'user' ? 'md:chat-start' : 'md:chat-end']">
                                     <div v-if="chat.sender === 'bot'" class="chat-image avatar">
@@ -112,10 +115,14 @@ onMounted(() => {
                                         </div>
                                     </div>
                                     <div class="chat-bubble shadow">
-                                        <p v-if="chat.sender === 'bot'" v-html="chat.text" class="mx-auto my-4"
-                                            :class="[chat.type === 'e' ? 'text-error' : 'text-neutral-900']">
-                                        </p>
-                                        <div v-else class="mx-auto my-4" v-html="chat.text" />
+                                        <vue-markdown v-if="chat.sender === 'bot'" :source="chat.text"
+                                            class="mx-auto my-4 prose max-w-none"
+                                            :class="[chat.type === 'e' ? 'text-error' : 'text-neutral-900']" />
+
+                                        <vue-markdown v-else class="mx-auto my-4 prose max-w-none" :source="chat.text" />
+                                        <!--
+                                        <div v-else class="mx-auto my-4 prose">{{ chat.text }}</div>
+                                        -->
                                     </div>
                                 </div>
                             </div>
@@ -167,31 +174,26 @@ onMounted(() => {
 
                             </form>
                         </div>
-                        <div class="w-full">
+                        <div class="w-full space-x-4 space-y-4">
                             <button @click="resetChat()" class="btn">Reset</button>
+                            <Options />
                         </div>
                     </div>
 
                 </div>
             </div>
-            <div class="flex flex-wrap my-2 px-4 text-center items-center">
-                <div class="divider w-full"></div>
-                <div class="w-full md:w-1/3">
+            <div class="divider"></div>
+            <div class="flex flex-auto my-2 px-4 text-center items-center">
+                <ToggleDarkMode class="mx-auto" />
+                <!--
+                <img src="/img/catprofile.jpg" alt="markGPT cat" class="dark:invert spinMe rounded-full h-12 float-right" />
+                -->
 
-                    <ToggleDarkMode class="" />
-                </div>
-                <div class="w-full md:w-1/3">
-                    <!--
-                    <a href="https://mcrmc.co.uk" class="text-center text-sm hover:text-primary hover:underline">mcrmc</a>
-                    -->
-                </div>
-                <div class="w-full md:w-1/3">
-                    <!--
+
+                <!--
                     <button @click.prevent="test()">Test!!!</button>
                     -->
-                    <img src="/img/catprofile.jpg" alt="markGPT cat"
-                        class="dark:invert spinMe rounded-full h-12 float-right" />
-                </div>
+
             </div>
         </div>
 

@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
         $router->get('/get-new-greeting', 'getNewGreeting')->name('greeting.new');
         $router->get('/clear-chat', 'clearChat')->name('chat.clear');
         $router->get('test', 'test')->name('test');
+        $router->post('toggle-options', 'toggleOptions')->name('toggle.options');
     });
 });
 

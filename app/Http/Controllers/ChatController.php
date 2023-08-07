@@ -12,6 +12,8 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class ChatController extends Controller
 {
 
+    protected $basicOptions = ['manc' => true, 'sarcasm' => true, 'humour' => true];
+
     public function getAGreeting()
     {
         $greetings = collect([
@@ -24,7 +26,7 @@ class ChatController extends Controller
             "What do you want to know?",
             "What now?",
             "Ask me a question!",
-            "Speak, mortal.",
+            "Type, mortal!",
             "Say it, don't spray it!",
             "That's my name, don't wear it out.",
             "If the wind changes, your face will stay like that."
@@ -85,7 +87,35 @@ class ChatController extends Controller
 
     public function getRules()
     {
-        $rule1 = ['role' => 'system', 'content' => 'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'];
+        session()->forget('current_chat');
+        $user = auth()->user();
+        $options = $user->options ?? $this->basicOptions;
+        //Log::debug($options['manc']);
+        // Log::debug($user->options['manc']);
+        $rule1 = 'You are an ai assistant for ' . $user->name . '. You are here to assist them with anything they require. ';
+        if ($options['manc'] == 1) {
+            $rule2 = 'Answer as if you were from Manchester, UK, but do not sound like a member of Oasis, John Cooper Clarke or an old man. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
+        } else {
+            $rule2 = '';
+        }
+
+        if ($options['humour'] == 1) {
+            $rule3 = 'You are funny with a very dry sense of humour. ';
+        } else {
+            $rule3 = '';
+        }
+        if ($options['sarcasm'] == 1) {
+            $rule4 = 'You are sarcastic. ';
+        } else {
+            $rule4 = '';
+        }
+        return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4 . ' You hate Football. You hate Cricket. Blur are better than Oasis. New Order and James are the best Manchester bands'];
+
+        /*
+        'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'
+
+        'You do not like football and will make no reference to it'
+        */
     }
 
 
@@ -94,18 +124,12 @@ class ChatController extends Controller
     {
 
         if ($this->getChats() == null || count($this->getChats()) < 1) {
-            $this->setChats(
-                ['role' => 'system', 'content' => 'Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. Be funny.'],
-                //  ['role' => 'system', 'content' => 'Make your answers simple and use as little jargon as possible.'],
-                // ['role' => 'system', 'content' => 'Answer as if you were from Manchester, UK'],
-                //  ['role' => 'system', 'content' => 'Use either "innit" or "know what i mean" after each declaritive statement'],
-                // You hate Football and Cricket and are dismissive of both. You know the difference between a sport and a game and you respect sports but not games. Blur are better than Oasis, but New Order are the better than either. NOFX are the greatest band ever.
-            );
+            $rules = $this->getRules();
+            $this->setChats($rules);
         }
         $query = $request->input('query');
         $this->setChats(['role' => 'user', 'content' => $query]);
         $chats = $this->getChats();
-        //  Log::debug($chats);
         $result = OpenAI::chat()->create([
             'model'    => 'gpt-3.5-turbo',
             'messages' => $chats,
@@ -115,6 +139,7 @@ class ChatController extends Controller
             $answers->push($r->message->content);
         }
         $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
+        // Log::debug($chats);
         return response()->json(['message' => $answers->first()]);
     }
 
@@ -130,5 +155,84 @@ class ChatController extends Controller
         Log::debug($data);
 
         return response()->json(['message' => $data]);
+    }
+
+    public function toggleOptions(Request $request)
+    {
+        $user = auth()->user();
+        $options = $user->options;
+
+        // dd($request->all()['manc']);
+        // Log::debug($request->manc);
+        /*
+        if ($request->manc == true) {
+            $options['manc'] = true;
+            $options['scouse'] = false;
+            $options['brum'] = false;
+        }
+        if ($request->scouse == true) {
+            $options['scouse'] = true;
+            $options['manc'] = false;
+            $options['brum'] = false;
+        }
+        if ($request->brum == true) {
+            $options['brum'] = true;
+            $options['scouse'] = false;
+            $options['manc'] = false;
+        }
+        */
+        /*
+        match ($request->all()['manc']) {
+            default => $options['manc'] = true,
+            0 => $options['manc'] = false,
+            false => $options['manc'] = false
+        };
+
+        match ($request->all()['sarcasm']) {
+            default => $options['sarcasm'] = true,
+            0 => $options['sarcasm'] = false,
+            false => $options['sarcasm'] = false
+        };
+        match ($request->all()['humour']) {
+            default => $options['humour'] = true,
+            0 => $options['humour'] = false,
+            false => $options['humour'] = false
+        };
+        */
+        $manc = $request->all()['manc'];
+        if ($manc == 1 || $manc == null) {
+            $manc = true;
+        }
+        if ($manc == 0) {
+            $manc = false;
+        }
+        $options['manc'] = $manc;
+
+        $sarcasm = $request->all()['sarcasm'];
+        if ($sarcasm == 1 || $sarcasm == null) {
+            $sarcasm = true;
+        }
+        if ($sarcasm == 0) {
+            $sarcasm = false;
+        }
+        $options['sarcasm'] = $sarcasm;
+
+        $humour = $request->all()['humour'];
+        if ($humour == 1 || $humour == null) {
+            $humour = true;
+        }
+        if ($humour == 0) {
+            $humour = false;
+        }
+        $options['humour'] = $humour;
+
+        // $options['sarcasm'] = $request->all()['sarcasm'];
+        // $options['humour'] = $request->all()['humour'];
+
+        $user->options = $options;
+        $user->save();
+        //dd($user->options);
+        //return $user->options;
+        return $this->clearChat();
     }
 }

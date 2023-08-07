@@ -39,6 +39,14 @@ class HandleInertiaRequests extends Middleware
                     'location' => $request->url(),
                 ]);
             },
+            'options' => $this->getOptions($request),
         ]);
+    }
+
+    public function getOptions(Request $request)
+    {
+        $user = $request->user();
+        $options = $user->options ?? ['manc' => true, 'sarcasm' => true, 'humour' => true];
+        return $options;
     }
 }
