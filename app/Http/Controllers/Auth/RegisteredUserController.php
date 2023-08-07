@@ -42,7 +42,7 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $user->options = ['manc' => true, 'sarcasm' => true, 'humour' => true];
+        $user->options = ['manc' => 1, 'sarcasm' => 1, 'humour' => 1];
         $user->save();
 
         event(new Registered($user));

@@ -46,7 +46,7 @@ class HandleInertiaRequests extends Middleware
     public function getOptions(Request $request)
     {
         $user = $request->user();
-        $options = $user->options ?? ['manc' => true, 'sarcasm' => true, 'humour' => true];
+        $options = $user->options ?? ['manc' => 1, 'sarcasm' => 1, 'humour' => 1];
         return $options;
     }
 }

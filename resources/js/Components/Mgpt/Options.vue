@@ -41,18 +41,18 @@ onMounted(() => {
     <button class="btn" @click.prevent="toggleShowOptions()">Options</button>
     <template v-if="showOptions">
         <select class="select select-primary" v-model="manc" @change="toggleOptions()">
-            <option value="true">Manc On</option>
-            <option value="false">Manc Off</option>
+            <option value="1">Manc On</option>
+            <option value="0">Manc Off</option>
         </select>
 
         <select class="select select-primary" v-model="sarcasm" @change="toggleOptions()">
-            <option value="true">Sarcasm On</option>
-            <option value="false">Sarcasm Off</option>
+            <option value="1">Sarcasm On</option>
+            <option value="0">Sarcasm Off</option>
         </select>
 
         <select class="select select-primary" v-model="humour" @change="toggleOptions()">
-            <option value="true">Humour On</option>
-            <option value="false">Humour Off</option>
+            <option value="1">Humour On</option>
+            <option value="0">Humour Off</option>
         </select>
     </template>
 </template>

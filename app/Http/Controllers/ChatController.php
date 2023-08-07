@@ -12,7 +12,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class ChatController extends Controller
 {
 
-    protected $basicOptions = ['manc' => true, 'sarcasm' => true, 'humour' => true];
+    protected $basicOptions = ['manc' => 1, 'sarcasm' => 1, 'humour' => 1];
 
     public function getAGreeting()
     {
@@ -89,22 +89,26 @@ class ChatController extends Controller
     {
         session()->forget('current_chat');
         $user = auth()->user();
-        $options = $user->options ?? $this->basicOptions;
+        if ($user->options) {
+            $options = $user->options;
+        } else {
+            $options = $this->basicOptions;
+        }
         //Log::debug($options['manc']);
         // Log::debug($user->options['manc']);
         $rule1 = 'You are an ai assistant for ' . $user->name . '. You are here to assist them with anything they require. ';
-        if ($options['manc'] == true) {
+        if ($options['manc'] == 1) {
             $rule2 = 'Answer as if you were from Manchester, UK. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
         } else {
             $rule2 = '';
         }
 
-        if ($options['humour'] == true) {
+        if ($options['humour'] == 1) {
             $rule3 = 'You are funny with a very dry sense of humour. ';
         } else {
             $rule3 = '';
         }
-        if ($options['sarcasm'] == true) {
+        if ($options['sarcasm'] == 1) {
             $rule4 = 'You are sarcastic. ';
         } else {
             $rule4 = '';
@@ -201,28 +205,28 @@ class ChatController extends Controller
         */
         $manc = $request->all()['manc'];
         if ($manc == 1 || $manc == null) {
-            $manc = true;
+            $manc = 1;
         }
         if ($manc == 0) {
-            $manc = false;
+            $manc = 0;
         }
         $options['manc'] = $manc;
 
         $sarcasm = $request->all()['sarcasm'];
         if ($sarcasm == 1 || $sarcasm == null) {
-            $sarcasm = true;
+            $sarcasm = 1;
         }
         if ($sarcasm == 0) {
-            $sarcasm = false;
+            $sarcasm = 0;
         }
         $options['sarcasm'] = $sarcasm;
 
         $humour = $request->all()['humour'];
         if ($humour == 1 || $humour == null) {
-            $humour = true;
+            $humour = 1;
         }
         if ($humour == 0) {
-            $humour = false;
+            $humour = 0;
         }
         $options['humour'] = $humour;
 
