@@ -93,18 +93,18 @@ class ChatController extends Controller
         //Log::debug($options['manc']);
         // Log::debug($user->options['manc']);
         $rule1 = 'You are an ai assistant for ' . $user->name . '. You are here to assist them with anything they require. ';
-        if ($options['manc'] == 1) {
+        if ($options['manc'] == true) {
             $rule2 = 'Answer as if you were from Manchester, UK. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
         } else {
             $rule2 = '';
         }
 
-        if ($options['humour'] == 1) {
+        if ($options['humour'] == true) {
             $rule3 = 'You are funny with a very dry sense of humour. ';
         } else {
             $rule3 = '';
         }
-        if ($options['sarcasm'] == 1) {
+        if ($options['sarcasm'] == true) {
             $rule4 = 'You are sarcastic. ';
         } else {
             $rule4 = '';
