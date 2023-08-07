@@ -97,7 +97,7 @@ onMounted(() => {
 
                         <!--Results-->
                         <template v-if="result">
-                            <div v-for="(chat, index) in chatHistory" :key="index" class="">
+                            <div v-for="(chat, index) in chatHistory" :key="index" class="my-4">
                                 <div class="fade-in"
                                     :class="['md:chat', chat.sender === 'user' ? 'md:chat-start' : 'md:chat-end']">
                                     <div v-if="chat.sender === 'bot'" class="chat-image avatar">
