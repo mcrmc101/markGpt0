@@ -195,6 +195,17 @@ onMounted(() => {
                     -->
 
             </div>
+            <div class="flex flex-col space-y-1 text-center text-gray-600" style="font-size: 0.8em;">
+                <small>Warning: This program talks crap, speaks bollocks and witters nonsense.
+                    It is not to be
+                    relied upon for
+                    any legal, political, military, medical, relationship, pet or child care advice.</small>
+
+                <small>No liability will be accepted for anything, ever.</small>
+
+                <small>Powered by Chat GPT</small>
+                <small>&copy;&trade;&nbsp; mcrmc {{ new Date().getFullYear() }}</small>
+            </div>
         </div>
 
     </AuthenticatedLayout>
