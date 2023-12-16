@@ -45,7 +45,7 @@ const toggleGPT4ChatForm = () => {
     <AuthenticatedLayout>
         <div class="py-6">
             <div class="container px-4 mx-auto mb-auto">
-                <div class="items-center p-4 my-auto bg-white shadow-sm sm:rounded-lg md:p-8">
+                <div class="items-center p-4 my-auto bg-white rounded-md shadow-sm sm:rounded-lg md:p-8">
 
 
                     <div class="grid justify-center grid-cols-1 mt-auto space-y-2">
