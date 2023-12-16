@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
 
 const generatedImage = ref();
 const query = ref('');
@@ -31,6 +31,12 @@ watch(query, () => {
     nextTick(() => {
         textarea.value.style.height = textarea.value.scrollHeight + 'px';
     });
+});
+
+onBeforeUnmount(() => {
+    if (generatedImage.value) {
+        axios.post(route('model.create', { chatType: 'image' }));
+    }
 });
 </script>
 <template>

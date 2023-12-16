@@ -105,7 +105,7 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </div>
         </nav>
-        <main class="my-auto dark:invert">
+        <main class="dark:invert">
 
             <slot />
         </main>

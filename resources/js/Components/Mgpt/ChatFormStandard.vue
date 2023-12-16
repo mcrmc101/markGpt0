@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onMounted, onBeforeUnmount } from 'vue';
 import { router } from '@inertiajs/vue3';
 import VueMarkdown from 'vue-markdown-render';
 import Options from '@/Components/Mgpt/Options.vue';
@@ -69,6 +69,12 @@ const resetChat = () => {
 
 onMounted(() => {
     getNewGreeting();
+});
+
+onBeforeUnmount(() => {
+    if (chatHistory.value.length > 0) {
+        axios.post(route('model.create', { chatType: 'markgpt' }));
+    }
 });
 </script>
 <template>

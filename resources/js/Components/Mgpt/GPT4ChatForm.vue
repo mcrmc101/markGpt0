@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios';
-import { ref, watch, nextTick, onMounted } from 'vue';
+import { ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import { router } from '@inertiajs/vue3';
 import VueMarkdown from 'vue-markdown-render';
 
@@ -50,6 +50,12 @@ const submitForm = () => {
 const resetChat = () => {
     return router.visit(route('chat.clear'));
 };
+
+onBeforeUnmount(() => {
+    if (chatHistory.value.length > 0) {
+        axios.post(route('model.create', { chatType: 'gpt' }));
+    }
+});
 
 </script>
 <template>

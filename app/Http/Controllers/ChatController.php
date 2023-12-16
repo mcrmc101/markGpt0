@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -63,6 +64,25 @@ class ChatController extends Controller
         return Inertia::render('Dashboard');
     }
 
+    public function createChatModel(Request $request)
+    {
+        $type = $request->input('chatType');
+        $chatModel = new Chat();
+        $chatModel->user_id = auth()->user()->id;
+        $chatModel->type = $type;
+        if ($type == 'image') {
+            $chatModel->content = session()->get('current_image');
+            session()->forget('current_image');
+        } elseif ($type == 'gpt') {
+            $chatModel->content = json_encode(session()->get('current_GPT_chat'));
+            session()->forget('current_GPT_chat');
+        } else {
+            $chatModel->content = json_encode(session()->get('current_chat'));
+            session()->forget('current_chat');
+        }
+        $chatModel->save();
+    }
+
     public function clearChat()
     {
         session()->forget('current_chat');
@@ -82,6 +102,11 @@ class ChatController extends Controller
     public function getGPTChats()
     {
         return session()->get('current_GPT_chat');
+    }
+
+    public function setImageUrl($url)
+    {
+        session()->put('current_image', $url);
     }
 
     public function setChats($chat)
@@ -125,12 +150,12 @@ class ChatController extends Controller
         }
 
         if ($options['humour'] == 1) {
-            $rule3 = 'You have a very dry sense of humour. ';
+            $rule3 = 'You have a very dry and dark sense of humour. ';
         } else {
             $rule3 = '';
         }
         if ($options['sarcasm'] == 1) {
-            $rule4 = 'You are sarcastic, but not an arsehole with it. ';
+            $rule4 = 'You are sarcastic, but not rude. ';
         } else {
             $rule4 = '';
         }
@@ -203,12 +228,11 @@ class ChatController extends Controller
             'quality' => $quality,
             'response_format' => 'url',
         ]);
-        /*
+
         foreach ($response->data as $data) {
-            $data->url;
-            $data->b64_json;
+            $this->setImageUrl($data->url);
         }
-        */
+
 
         return response()->json($response->data);
     }
