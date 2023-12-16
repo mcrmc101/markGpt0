@@ -12,7 +12,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class ChatController extends Controller
 {
 
-    protected $basicOptions = ['manc' => 1, 'sarcasm' => 1, 'humour' => 1];
+    protected $basicOptions = ['manc' => 0, 'sarcasm' => 0, 'humour' => 0];
 
     public function getAGreeting()
     {
@@ -113,7 +113,7 @@ class ChatController extends Controller
         } else {
             $rule4 = '';
         }
-        return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4 . ' You hate Football. You hate Cricket. Blur are better than Oasis. New Order and James are the best Manchester bands. Keep any negative statements as short as possible. Never apologise.'];
+        return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4];
 
         /*
         'You are an assistant for elderly people with limited knowledge of the internet and computer technology. Make your answers simple and use as little jargon as possible. Format the answers in accessible html so any lists can be read by a screen reader. Answer as if you were from Manchester, UK, but do not sound like a member of Oasis or an old man. Use either "innit" or "know what i mean" after each declaritive statement'
@@ -135,7 +135,7 @@ class ChatController extends Controller
         $this->setChats(['role' => 'user', 'content' => $query]);
         $chats = $this->getChats();
         $result = OpenAI::chat()->create([
-            'model'    => 'gpt-3.5-turbo',
+            'model'    => 'gpt-4',
             'messages' => $chats,
         ]);
         $answers = collect([]);
@@ -145,6 +145,29 @@ class ChatController extends Controller
         $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
         // Log::debug($chats);
         return response()->json(['message' => $answers->first()]);
+    }
+
+    public function createImage(Request $request)
+    {
+        $query = $request->input('query');
+        $size = $request->input('size');
+        $quality = $request->input('quality');
+        $response = OpenAI::images()->create([
+            'model' => 'dall-e-3',
+            'prompt' => $query,
+            'n' => 1,
+            'size' => $size,
+            'quality' => $quality,
+            'response_format' => 'url',
+        ]);
+        /*
+        foreach ($response->data as $data) {
+            $data->url;
+            $data->b64_json;
+        }
+        */
+
+        return response()->json($response->data);
     }
 
     public function test($text)

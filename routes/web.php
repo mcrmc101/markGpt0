@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
         $router->get('/clear-chat', 'clearChat')->name('chat.clear');
         $router->get('test', 'test')->name('test');
         $router->post('toggle-options', 'toggleOptions')->name('toggle.options');
+
+        $router->post('/create-image', 'createImage')->name('image.create');
     });
 });
 
