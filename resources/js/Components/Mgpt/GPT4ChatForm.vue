@@ -3,27 +3,13 @@ import axios from 'axios';
 import { ref, watch, nextTick, onMounted } from 'vue';
 import { router } from '@inertiajs/vue3';
 import VueMarkdown from 'vue-markdown-render';
-import Options from '@/Components/Mgpt/Options.vue';
 
 const query = ref('');
 const textarea = ref();
-const greeting = ref();
-const buttontext = ref();
 const result = ref('');
 const error = ref('');
 const loading = ref(false);
 const chatHistory = ref([]);
-
-const getNewGreeting = () => {
-    axios.get(route('greeting.new'))
-        .then((res) => {
-            greeting.value = res.data.greeting;
-            buttontext.value = res.data.button;
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-};
 
 watch(query, () => {
     textarea.value.style.height = 'auto';
@@ -36,14 +22,13 @@ const submitForm = () => {
     loading.value = true;
     var msg = '';
     if (query.value.length < 5) {
-        msg = 'Be more Verbose!';
+        msg = 'Type some more';
         result.value = msg;
         chatHistory.value.push({ sender: 'bot', text: msg, type: 'e' });
         query.value = '';
         loading.value = false;
-        return getNewGreeting();
     }
-    axios.post(route('wisdom.seek', { query: query.value }))
+    axios.post(route('ask.gpt', { query: query.value }))
         .then((res) => {
             msg = res.data.message;
             result.value = msg;
@@ -54,11 +39,10 @@ const submitForm = () => {
             query.value = '';
             error.value = '';
             loading.value = false;
-            getNewGreeting();
         })
         .catch((err) => {
             console.log(err);
-            error.value = 'Chat GPT is stupid and confused! Press Reset and ask again!';
+            error.value = 'Chat GPT is out of credits for this conversation. Press Reset and ask again.';
             loading.value = false;
         });
 };
@@ -67,9 +51,6 @@ const resetChat = () => {
     return router.visit(route('chat.clear'));
 };
 
-onMounted(() => {
-    getNewGreeting();
-});
 </script>
 <template>
     <div v-if="result || error">
@@ -79,9 +60,12 @@ onMounted(() => {
             <div v-for="(chat, index) in chatHistory" :key="index" class="my-6">
                 <div class="fade-in" :class="['md:chat', chat.sender === 'user' ? 'md:chat-start' : 'md:chat-end']">
                     <div v-if="chat.sender === 'bot'" class="chat-image avatar">
+
                         <div class="w-10 rounded-full">
-                            <img src="/img/catprofile.jpg" alt="markGPT cat" class="dark:invert" />
+                            <img src="/img/evilai.png" alt="evil ai pic" class="dark:invert" />
                         </div>
+
+
                     </div>
                     <div v-else class="chat-image">
                         <div class="chat-header">
@@ -89,7 +73,7 @@ onMounted(() => {
                             {{ $page.props.auth.user.name }}
                         </div>
                     </div>
-                    <div class="shadow chat-bubble">
+                    <div class="shadow chat-bubble bg-neutral-50">
                         <vue-markdown v-if="chat.sender === 'bot'" :source="chat.text" class="mx-auto my-4 prose max-w-none"
                             :class="[chat.type === 'e' ? 'text-error' : 'text-neutral-900']" />
 
@@ -117,7 +101,7 @@ onMounted(() => {
     </div>
 
     <form @submit.prevent="submitForm()">
-        <textarea ref="textarea" :placeholder="greeting" class="w-full textarea textarea-bordered"
+        <textarea ref="textarea" placeholder="Ask a Question" class="w-full textarea textarea-bordered"
             v-model="query"></textarea>
 
         <button class="my-2 font-extrabold btn btn-success" type="submit">
@@ -131,13 +115,12 @@ onMounted(() => {
                 One Mo...
             </template>
             <template v-else>
-                {{ buttontext }}
+                Submit
             </template>
         </button>
 
     </form>
     <div class="w-full space-x-4 space-y-4">
-        <button @click.prevent="resetChat()" class="btn">Reset</button>
-        <Options />
+        <button @click.prevent="resetChat()" class="btn btn-sm">Reset</button>
     </div>
 </template>

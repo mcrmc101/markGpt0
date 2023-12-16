@@ -42,6 +42,8 @@ Route::middleware('auth')->group(function () {
         $router->post('toggle-options', 'toggleOptions')->name('toggle.options');
 
         $router->post('/create-image', 'createImage')->name('image.create');
+
+        $router->post('/ask-gpt', 'askGPT')->name('ask.gpt');
     });
 });
 

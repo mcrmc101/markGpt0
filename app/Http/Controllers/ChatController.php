@@ -68,10 +68,20 @@ class ChatController extends Controller
         session()->forget('current_chat');
         return to_route('dashboard');
     }
+    public function clearGPTChat()
+    {
+        session()->forget('current_GPT_chat');
+        return to_route('dashboard');
+    }
 
     public function getChats()
     {
         return session()->get('current_chat');
+    }
+
+    public function getGPTChats()
+    {
+        return session()->get('current_GPT_chat');
     }
 
     public function setChats($chat)
@@ -82,6 +92,17 @@ class ChatController extends Controller
         }
         array_push($chats, $chat);
         session()->put('current_chat', $chats);
+        return true;
+    }
+
+    public function setGPTChats($chat)
+    {
+        $chats = session()->get('current_GPT_chat');
+        if ($chats == null) {
+            $chats = [];
+        }
+        array_push($chats, $chat);
+        session()->put('current_GPT_chat', $chats);
         return true;
     }
 
@@ -96,23 +117,25 @@ class ChatController extends Controller
         }
         //Log::debug($options['manc']);
         // Log::debug($user->options['manc']);
-        $rule1 = 'You are an ai assistant for ' . $user->name . '. You are here to assist them with anything they require. ';
+        $rule1 = '';
         if ($options['manc'] == 1) {
-            $rule2 = 'Answer as if you were from Manchester, UK. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. ';
+            $rule2 = 'Answer as if you were from Manchester, UK. You are intelligent and erudite and Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. You do not like football and will make no reference to it.';
         } else {
             $rule2 = '';
         }
 
         if ($options['humour'] == 1) {
-            $rule3 = 'You are funny with a very dry sense of humour. ';
+            $rule3 = 'You have a very dry sense of humour. ';
         } else {
             $rule3 = '';
         }
         if ($options['sarcasm'] == 1) {
-            $rule4 = 'You are sarcastic. ';
+            $rule4 = 'You are sarcastic, but not an arsehole with it. ';
         } else {
             $rule4 = '';
         }
+
+
         return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4];
 
         /*
@@ -143,6 +166,26 @@ class ChatController extends Controller
             $answers->push($r->message->content);
         }
         $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
+        // Log::debug($chats);
+        return response()->json(['message' => $answers->first()]);
+    }
+
+
+
+    public function askGpt(Request $request)
+    {
+        $query = $request->input('query');
+        $this->setGPTChats(['role' => 'user', 'content' => $query]);
+        $chats = $this->getGPTChats();
+        $result = OpenAI::chat()->create([
+            'model' => 'gpt-4',
+            'messages' => $chats,
+        ]);
+        $answers = collect([]);
+        foreach ($result->choices as $r) {
+            $answers->push($r->message->content);
+        }
+        $this->setGPTChats(['role' => 'assistant', 'content' => $answers->first()]);
         // Log::debug($chats);
         return response()->json(['message' => $answers->first()]);
     }

@@ -1,14 +1,15 @@
 <script setup>
 import ChatFormStandard from '@/Components/Mgpt/ChatFormStandard.vue';
 import ImageForm from '@/Components/Mgpt/ImageForm.vue';
-import ToggleDarkMode from '@/Components/ToggleDarkMode.vue';
+import GPT4ChatForm from '@/Components/Mgpt/GPT4ChatForm.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import CloseIcon from '@/Components/Icons/CloseIcon.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 const showImageForm = ref(false);
 const showStandardChatForm = ref(false);
-const showGPTChatForm = ref(false);
+const showGPT4ChatForm = ref(false);
 
 const toggleImageForm = () => {
     if (showImageForm.value == false) {
@@ -27,6 +28,15 @@ const toggleStandardChatForm = () => {
         showStandardChatForm.value = false;
     }
 };
+
+const toggleGPT4ChatForm = () => {
+    if (showGPT4ChatForm.value == false) {
+        showGPT4ChatForm.value = true;
+    }
+    else {
+        showGPT4ChatForm.value = false;
+    }
+};
 </script>
 
 <template>
@@ -39,17 +49,22 @@ const toggleStandardChatForm = () => {
 
 
                     <div class="grid justify-center grid-cols-1 mt-auto space-y-2">
-
+                        <template v-if="!showImageForm && !showGPT4ChatForm && !showStandardChatForm">
+                            <h1 class="mb-2 text-2xl font-bold text-center underline">Select an Option</h1>
+                        </template>
                         <template v-if="showImageForm">
+                            <div class="col">
+                                <button class="float-right btn btn-sm text-error" @click.prevent="toggleImageForm()">
+                                    <CloseIcon />
+                                    <span class="sr-only"> Close</span>
+                                </button>
+                            </div>
                             <div class="col">
                                 <ImageForm />
                             </div>
-                            <div class="col">
-                                <button class="btn btn-sm btn-error" @click.prevent="toggleImageForm()">Close</button>
-                            </div>
                         </template>
                         <template v-else>
-                            <template v-if="!showStandardChatForm">
+                            <template v-if="!showStandardChatForm && !showGPT4ChatForm">
                                 <div class="text-center col">
                                     <button class="btn" @click.prevent="toggleImageForm()">Create an Image</button>
                                 </div>
@@ -57,17 +72,40 @@ const toggleStandardChatForm = () => {
                         </template>
                         <template v-if="showStandardChatForm">
                             <div class="col">
-                                <ChatFormStandard />
+                                <button class="float-right btn btn-sm text-error" @click.prevent="toggleStandardChatForm()">
+                                    <CloseIcon />
+                                    <span class="sr-only"> Close</span>
+                                </button>
                             </div>
                             <div class="col">
-                                <button class="btn btn-sm btn-error"
-                                    @click.prevent="toggleStandardChatForm()">Close</button>
+                                <ChatFormStandard />
                             </div>
                         </template>
                         <template v-else>
-                            <template v-if="!showImageForm">
+                            <template v-if="!showImageForm && !showGPT4ChatForm">
                                 <div class="text-center col">
                                     <button class="btn" @click.prevent="toggleStandardChatForm()">Ask MarkGPT</button>
+                                </div>
+                            </template>
+                        </template>
+
+
+                        <template v-if="showGPT4ChatForm">
+                            <div class="col">
+                                <button class="float-right btn btn-sm text-error" @click.prevent="toggleGPT4ChatForm()">
+                                    <CloseIcon />
+                                    <span class="sr-only"> Close</span>
+                                </button>
+                            </div>
+                            <div class="col">
+                                <GPT4ChatForm />
+                            </div>
+
+                        </template>
+                        <template v-else>
+                            <template v-if="!showStandardChatForm && !showImageForm">
+                                <div class="text-center col">
+                                    <button class="btn" @click.prevent="toggleGPT4ChatForm()">Ask GPT 4</button>
                                 </div>
                             </template>
                         </template>
@@ -79,30 +117,7 @@ const toggleStandardChatForm = () => {
 
                 </div>
             </div>
-            <div class="divider"></div>
-            <div class="flex items-center flex-auto px-4 my-2 text-center">
-                <ToggleDarkMode class="mx-auto" />
-                <!--
-                <img src="/img/catprofile.jpg" alt="markGPT cat" class="float-right h-12 rounded-full dark:invert spinMe" />
-                -->
 
-
-                <!--
-                    <button @click.prevent="test()">Test!!!</button>
-                    -->
-
-            </div>
-            <div class="flex flex-col p-2 space-y-1 text-center text-gray-600" style="font-size: 0.8em;">
-                <small>Warning: This program talks crap, speaks bollocks and witters nonsense.
-                    It is not to be
-                    relied upon for
-                    any legal, political, military, medical, relationship, pet or child care advice.</small>
-
-                <small>No liability will be accepted for anything, ever.</small>
-
-                <small>Powered by Chat GPT</small>
-                <small>&copy;&trade;&nbsp; mcrmc {{ new Date().getFullYear() }}</small>
-            </div>
         </div>
 
     </AuthenticatedLayout>
