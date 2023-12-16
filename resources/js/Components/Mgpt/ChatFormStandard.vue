@@ -95,7 +95,7 @@ onBeforeUnmount(() => {
                             {{ $page.props.auth.user.name }}
                         </div>
                     </div>
-                    <div class="shadow chat-bubble">
+                    <div class="shadow chat-bubble bg-neutral-50">
                         <vue-markdown v-if="chat.sender === 'bot'" :source="chat.text" class="mx-auto my-4 prose max-w-none"
                             :class="[chat.type === 'e' ? 'text-error' : 'text-neutral-900']" />
 
