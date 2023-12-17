@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, computed } from 'vue';
+import { ref, computed } from 'vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
 import { onMounted } from 'vue';
 

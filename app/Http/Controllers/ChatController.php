@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Chat;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use OpenAI\Laravel\Facades\OpenAI;
 use Symfony\Component\Process\Process;
@@ -81,6 +82,7 @@ class ChatController extends Controller
             session()->forget('current_chat');
         }
         $chatModel->save();
+        return true;
     }
 
     public function clearChat()
@@ -164,7 +166,48 @@ class ChatController extends Controller
         return ['role' => 'system', 'content' => $rule1 . $rule2 . $rule3 . $rule4];
     }
 
+    public function convertAudio(Request $request)
+    {
+        if ($request->hasFile('audio')) {
+            $audioFile = $request->file('audio');
+            $originalFileName = $audioFile->getClientOriginalName();
 
+            // Save the uploaded audio file to a temporary location
+            $temporaryPath = $audioFile->storeAs('public/temp', $originalFileName);
+            //  Storage::delete($temporaryPath);
+
+            return $temporaryPath;
+        } else {
+            return false;
+        }
+    }
+
+    public function chatSpeech(Request $request)
+    {
+
+        if ($request->hasFile('audio')) {
+            $audioFile = $request->file('audio')->store('public/files', 'public');
+            // $audioFile = Storage::putFile('speech', $request->file('audio'));
+            //    $name = $request->file('audio')->getClientOriginalName();
+            // Log::debug($audioFile);
+
+
+
+            $result = OpenAI::audio()->transcribe([
+                'model' => 'whisper-1',
+                'file' => Storage::disk('public')->readStream($audioFile),
+                'language' => 'en',
+                'response_format' => 'text',
+            ]);
+            //  Log::debug(json_encode($result->text));
+
+
+            return $this->seekWisdomQuery($result->text);
+            //  return response()->json(['message' => $result], 200);
+        } else {
+            return response()->json(['message' => 'No audio file received'], 400);
+        }
+    }
 
     public function seekWisdom(Request $request)
     {
@@ -187,6 +230,29 @@ class ChatController extends Controller
         $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
         // Log::debug($chats);
         return response()->json(['message' => $answers->first()]);
+    }
+
+    public function seekWisdomQuery($query)
+    {
+        Log::debug($query);
+        if ($this->getChats() == null || count($this->getChats()) < 1) {
+            $rules = $this->getRules();
+            $this->setChats($rules);
+        }
+
+        $this->setChats(['role' => 'user', 'content' => $query]);
+        $chats = $this->getChats();
+        $result = OpenAI::chat()->create([
+            'model'    => 'gpt-4',
+            'messages' => $chats,
+        ]);
+        $answers = collect([]);
+        foreach ($result->choices as $r) {
+            $answers->push($r->message->content);
+        }
+        $this->setChats(['role' => 'assistant', 'content' => $answers->first()]);
+        // Log::debug($chats);
+        return response()->json(['message' => $answers->first(), 'originalQuestion' => $query]);
     }
 
 

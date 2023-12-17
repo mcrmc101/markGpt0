@@ -6,11 +6,13 @@ const generatedImage = ref();
 const query = ref('');
 const textarea = ref();
 const loading = ref(false);
-const selectedSize = ref('1024x1024');
+const selectedSize = ref('1792x1024');
 const selectedQuality = ref('standard');
+const errorMessage = ref('');
 
 
 const submitForm = () => {
+    errorMessage.value = '';
     loading.value = true;
     axios.post(route('image.create'), {
         query: query.value,
@@ -19,7 +21,13 @@ const submitForm = () => {
     })
         .then((res) => {
             loading.value = false;
-            generatedImage.value = res.data[0].url;
+            if (res.data[0].url) {
+                query.value = '';
+                generatedImage.value = res.data[0].url;
+            }
+            else {
+                errorMessage.value = 'Something has Gone Wrong!!!';
+            }
         })
         .catch((error) => {
             loading.value = false;
@@ -44,6 +52,9 @@ onBeforeUnmount(() => {
         <template v-if="generatedImage">
             <img :src="generatedImage" alt="" class="w-full mb-2 rounded shadow dark:invert">
         </template>
+        <template v-if="errorMessage">
+            <p class="text-center text-error" v-html="errorMessage" />
+        </template>
         <form @submit.prevent="submitForm()">
             <textarea ref="textarea" class="w-full mb-2 textarea textarea-bordered" v-model="query"
                 placeholder="Describe what you want to see"></textarea>
@@ -58,12 +69,7 @@ onBeforeUnmount(() => {
             </select>
             <button class="mb-2 font-extrabold w-fit btn btn-success" type="submit">
                 <template v-if="loading">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                        class="text-white bi bi-arrow-clockwise loadspin" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z" />
-                        <path
-                            d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
-                    </svg>
+                    <span class="loading loading-spinner loading-sm"></span>
                     One Mo...
                 </template>
                 <template v-else>

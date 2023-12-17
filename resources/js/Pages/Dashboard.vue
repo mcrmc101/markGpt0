@@ -6,8 +6,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import CloseIcon from '@/Components/Icons/CloseIcon.vue';
 import { Head } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import VoiceChatForm from '@/Components/Mgpt/VoiceChatForm.vue';
 
 const showImageForm = ref(false);
+const showVoiceForm = ref(false);
 const showStandardChatForm = ref(false);
 const showGPT4ChatForm = ref(false);
 
@@ -17,6 +19,15 @@ const toggleImageForm = () => {
     }
     else {
         showImageForm.value = false;
+    }
+};
+
+const toggleVoiceForm = () => {
+    if (showVoiceForm.value == false) {
+        showVoiceForm.value = true;
+    }
+    else {
+        showVoiceForm.value = false;
     }
 };
 
@@ -44,16 +55,17 @@ const toggleGPT4ChatForm = () => {
 
     <AuthenticatedLayout>
         <div class="container h-auto px-4 py-6 mx-auto mb-auto">
-            <div class="items-center p-4 my-auto bg-white rounded-md shadow-sm sm:rounded-lg md:p-8">
+            <div class="p-4 my-auto bg-white rounded-md shadow-sm sm:rounded-lg md:p-8">
 
 
                 <div class="grid justify-center grid-cols-1 mt-auto space-y-2">
-                    <template v-if="!showImageForm && !showGPT4ChatForm && !showStandardChatForm">
+                    <template v-if="!showImageForm && !showGPT4ChatForm && !showStandardChatForm && !showVoiceForm">
                         <h1 class="mb-2 text-2xl font-bold text-center underline">Select an Option</h1>
                     </template>
                     <template v-if="showImageForm">
                         <div class="col">
                             <button class="float-right btn btn-sm text-error" @click.prevent="toggleImageForm()">
+                                <small>Image</small>
                                 <CloseIcon />
                                 <span class="sr-only"> Close</span>
                             </button>
@@ -63,15 +75,17 @@ const toggleGPT4ChatForm = () => {
                         </div>
                     </template>
                     <template v-else>
-                        <template v-if="!showStandardChatForm && !showGPT4ChatForm">
+                        <template v-if="!showStandardChatForm && !showGPT4ChatForm && !showVoiceForm">
                             <div class="text-center col">
-                                <button class="btn" @click.prevent="toggleImageForm()">Create an Image</button>
+                                <button class="btn hover:btn-primary" @click.prevent="toggleImageForm()">Create an
+                                    Image</button>
                             </div>
                         </template>
                     </template>
                     <template v-if="showStandardChatForm">
                         <div class="col">
                             <button class="float-right btn btn-sm text-error" @click.prevent="toggleStandardChatForm()">
+                                <small>markGPT</small>
                                 <CloseIcon />
                                 <span class="sr-only"> Close</span>
                             </button>
@@ -81,9 +95,10 @@ const toggleGPT4ChatForm = () => {
                         </div>
                     </template>
                     <template v-else>
-                        <template v-if="!showImageForm && !showGPT4ChatForm">
+                        <template v-if="!showImageForm && !showGPT4ChatForm && !showVoiceForm">
                             <div class="text-center col">
-                                <button class="btn" @click.prevent="toggleStandardChatForm()">Ask MarkGPT</button>
+                                <button class="btn hover:btn-primary" @click.prevent="toggleStandardChatForm()">Ask
+                                    MarkGPT</button>
                             </div>
                         </template>
                     </template>
@@ -92,6 +107,7 @@ const toggleGPT4ChatForm = () => {
                     <template v-if="showGPT4ChatForm">
                         <div class="col">
                             <button class="float-right btn btn-sm text-error" @click.prevent="toggleGPT4ChatForm()">
+                                <small>gpt-4</small>
                                 <CloseIcon />
                                 <span class="sr-only"> Close</span>
                             </button>
@@ -102,9 +118,30 @@ const toggleGPT4ChatForm = () => {
 
                     </template>
                     <template v-else>
-                        <template v-if="!showStandardChatForm && !showImageForm">
+                        <template v-if="!showStandardChatForm && !showImageForm && !showVoiceForm">
                             <div class="text-center col">
-                                <button class="btn" @click.prevent="toggleGPT4ChatForm()">Ask GPT 4</button>
+                                <button class="btn hover:btn-primary" @click.prevent="toggleGPT4ChatForm()">Ask
+                                    GPT-4</button>
+                            </div>
+                        </template>
+                    </template>
+
+                    <template v-if="showVoiceForm">
+                        <div class="col">
+                            <button class="float-right btn btn-sm text-error" @click.prevent="toggleVoiceForm()">
+                                <small>Voice Chat</small>
+                                <CloseIcon />
+                                <span class="sr-only"> Close</span>
+                            </button>
+                        </div>
+                        <div class="col">
+                            <VoiceChatForm />
+                        </div>
+                    </template>
+                    <template v-else>
+                        <template v-if="!showStandardChatForm && !showGPT4ChatForm && !showImageForm">
+                            <div class="text-center col">
+                                <button class="btn hover:btn-primary" @click.prevent="toggleVoiceForm()">Voice Chat</button>
                             </div>
                         </template>
                     </template>

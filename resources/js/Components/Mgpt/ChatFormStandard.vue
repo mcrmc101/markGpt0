@@ -63,6 +63,8 @@ const submitForm = () => {
         });
 };
 
+
+
 const resetChat = () => {
     return router.visit(route('chat.clear'));
 };
@@ -123,8 +125,11 @@ onBeforeUnmount(() => {
     </div>
 
     <form @submit.prevent="submitForm()">
+
         <textarea ref="textarea" :placeholder="greeting" class="w-full textarea textarea-bordered"
             v-model="query"></textarea>
+
+
 
         <button class="my-2 font-extrabold btn btn-success" type="submit">
             <template v-if="loading">
@@ -142,6 +147,7 @@ onBeforeUnmount(() => {
         </button>
 
     </form>
+
     <div class="w-full space-x-4 space-y-4">
         <button @click.prevent="resetChat()" class="btn">Reset</button>
         <Options />

@@ -11,7 +11,7 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
-    <div class="flex flex-col min-h-screen my-auto dark:invert">
+    <div class="flex flex-col min-h-screen my-auto bg-neutral-100 dark:invert">
         <nav class="z-50 bg-white border-b border-gray-100">
             <!-- Primary Navigation Menu -->
             <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
