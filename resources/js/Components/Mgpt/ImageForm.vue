@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
                     <option value="standard">Standard</option>
                     <option value="hd">HD</option>
                 </select>
-                <button class="mb-2 font-extrabold w-fit btn btn-secondary" type="submit">
+                <button class="mb-2 font-extrabold w-fit btn btn-primary" type="submit">
                     <template v-if="loading">
                         <span class="loading loading-spinner"></span>
                         One Mo...

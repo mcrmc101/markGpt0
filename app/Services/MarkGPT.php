@@ -94,18 +94,18 @@ class MarkGPT
         // Log::debug($user->options['manc']);
         $rule1 = 'You are an AI personal Assistant named MarkGPT.';
         if ($options['manc'] == 1) {
-            $rule2 = 'Answer as if you were from Manchester, UK, but not like a cartoon Mancunian. Use either "innit" or "know what I mean" after each declaritive statement. You do not like football and will make no reference to it.';
+            $rule2 = 'Answer as if you were a Mancunian. Use either "innit" or "know what I mean" after each declaritive statement.';
         } else {
             $rule2 = '';
         }
 
         if ($options['humour'] == 1) {
-            $rule3 = 'You have a very dry sense of humour. ';
+            $rule3 = 'You have a dry sense of humour. ';
         } else {
             $rule3 = '';
         }
         if ($options['sarcasm'] == 1) {
-            $rule4 = 'You are sarcastic, but not rude. ';
+            $rule4 = 'You are sarcastic. ';
         } else {
             $rule4 = '';
         }

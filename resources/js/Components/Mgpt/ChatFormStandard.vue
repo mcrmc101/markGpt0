@@ -131,7 +131,7 @@ onBeforeUnmount(() => {
 
 
 
-        <button class="my-2 font-extrabold btn btn-secondary" type="submit">
+        <button class="my-2 font-extrabold btn-primary btn" type="submit">
             <template v-if="loading">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
                     class="text-white bi bi-arrow-clockwise loadspin" viewBox="0 0 16 16">
@@ -149,6 +149,6 @@ onBeforeUnmount(() => {
     </form>
 
     <div class="w-full space-x-4 space-y-4">
-        <button @click.prevent="resetChat()" class="btn btn-info">Reset</button>
+        <button @click.prevent="resetChat()" class="btn btn-warning btn-sm">Reset</button>
     </div>
 </template>

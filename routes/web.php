@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TranslateController;
+use App\Http\Controllers\VoiceController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -35,21 +37,20 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
     Route::controller(ChatController::class)->prefix('chat')->group(function ($router) {
         $router->post('/seek-wisdom', 'seekWisdom')->name('wisdom.seek');
         $router->get('/get-new-greeting', 'getNewGreeting')->name('greeting.new');
         $router->get('/clear-chat', 'clearChat')->name('chat.clear');
-        $router->get('test', 'test')->name('test');
         $router->post('toggle-options', 'toggleOptions')->name('toggle.options');
-
-        $router->post('/create-image', 'createImage')->name('image.create');
-
-        $router->post('/ask-gpt', 'askGPT')->name('ask.gpt');
-
         $router->post('/create-model', 'createChatModel')->name('model.create');
+    });
 
+    Route::controller(ImageController::class)->prefix('images')->group(function ($router) {
+        $router->post('/create-image', 'createImage')->name('image.create');
+    });
 
-        //Figure A Way to blend these and make a universal translator. instruction the model to speak the result works with non english alphabet langauges
+    Route::controller(VoiceController::class)->prefix('voice')->group(function ($router) {
         $router->post('/chat-speech', 'chatSpeech')->name('chat.speech');
     });
 

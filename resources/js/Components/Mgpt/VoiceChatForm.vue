@@ -65,8 +65,8 @@ const recordMe = () => {
                 isRecording.value = true;
                 loading.value = true;
                 mediaRecorder.value.start();
-                console.log(mediaRecorder.value.state);
-                console.log("recorder started");
+                // console.log(mediaRecorder.value.state);
+                // console.log("recorder started");
 
                 stopButton.value.disabled = false;
                 recordButton.value.disabled = true;
@@ -78,8 +78,8 @@ const recordMe = () => {
 
                 stopButton.value.disabled = true;
                 recordButton.value.disabled = false;
-                console.log(mediaRecorder.value.state);
-                console.log("recorder stopped");
+                //       console.log(mediaRecorder.value.state);
+                //       console.log("recorder stopped");
                 mediaRecorder.value.stop();
             };
 
@@ -98,13 +98,13 @@ const recordMe = () => {
                     },
                 })
                     .then((res) => {
-                        console.log(res.data.message);
+                        //          console.log(res.data.message);
                         result.value = res.data.message;
                         // console.log(res.data.message);
                         speakMe(res.data.message);
                         chatHistory.value.push({ sender: 'user', text: res.data.originalQuestion, type: 'm' });
                         chatHistory.value.push({ sender: 'bot', text: res.data.message, type: 'm' });
-                        console.log(chatHistory);
+                        //             console.log(chatHistory);
                         //  questionText.value = '';
                         error.value = '';
                         loading.value = false;
@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
         <template v-if="recordVoice">
             <button class="btn-error btn btn-lg" v-show="isRecording" ref="stopButton">Stop Recording</button>
 
-            <button class="btn btn-secondary btn-lg" v-show="!isRecording" ref="recordButton">
+            <button class="btn btn-primary btn-lg" v-show="!isRecording" ref="recordButton">
                 <template v-if="loading">
                     <span class="loading loading-spinner loading-lg"></span>
                 </template>
@@ -216,7 +216,7 @@ onBeforeUnmount(() => {
 
     </div>
     <div class="w-full space-x-4 space-y-4">
-        <button @click.prevent="stopSpeaking()" class="btn btn-info">Stop Speaking</button>
-        <button @click.prevent="resetChat()" class="btn btn-warning">Reset</button>
+        <button @click.prevent="stopSpeaking()" class="btn btn-info btn-sm">Stop Speaking</button>
+        <button @click.prevent="resetChat()" class="btn btn-warning btn-sm">Reset</button>
     </div>
 </template>
