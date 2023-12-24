@@ -1,13 +1,15 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import ToggleDarkMode from '@/Components/ToggleDarkMode.vue';
 
 const showingNavigationDropdown = ref(false);
+
+const showBackground = computed(() => usePage().props.showBackground);
 </script>
 
 <template>
@@ -105,7 +107,8 @@ const showingNavigationDropdown = ref(false);
                 </div>
             </div>
         </nav>
-        <main class="flex-grow">
+
+        <main class="flex-grow dark:invert" :class="showBackground ? 'robotBg' : ''">
 
             <slot />
         </main>

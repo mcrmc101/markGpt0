@@ -1,10 +1,19 @@
+@import url(https://fonts.bunny.net/css?family=jetbrains-mono:400);
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
 * {
     font-size: 16px;
+    font-family: 'JetBrains Mono', monospace;
 }
+
+.robotBg {
+    background-image: url(/img/robots.gif);
+}
+
 
 .fade-in {
     -webkit-animation: fade-in 0.5s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;

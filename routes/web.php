@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\TranslateController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,7 +48,14 @@ Route::middleware('auth')->group(function () {
 
         $router->post('/create-model', 'createChatModel')->name('model.create');
 
+
+        //Figure A Way to blend these and make a universal translator. instruction the model to speak the result works with non english alphabet langauges
         $router->post('/chat-speech', 'chatSpeech')->name('chat.speech');
+    });
+
+    Route::controller(TranslateController::class)->prefix('translate')->group(function ($router) {
+        $router->post('/translate-from', 'translateFrom')->name('translate.from');
+        $router->post('/translate-to', 'translateTo')->name('translate.to');
     });
 });
 

@@ -43,4 +43,9 @@ class User extends Authenticatable
         'password' => 'hashed',
         'options' => 'array'
     ];
+
+    public function chats()
+    {
+        return $this->hasMany(Chat::class);
+    }
 }

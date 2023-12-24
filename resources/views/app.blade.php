@@ -10,7 +10,7 @@
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.bunny.net/css?family=jetbrains-mono:400" rel="stylesheet" />
 
     <!-- Scripts -->
     @routes
@@ -18,7 +18,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans subpixel-antialiased fade-in brightness-95">
+<body class="font-mono subpixel-antialiased fade-in brightness-95">
     @inertia
 </body>
 

@@ -10,6 +10,15 @@ const recordButton = ref();
 const isRecording = ref(false);
 const mediaRecorder = ref();
 
+const translateRoute = ref('translate.to');
+
+const selectedLanguage = ref('French');
+
+const languages = [
+    'Afrikaans', 'Arabic', 'Armenian', 'Azerbaijani', 'Belarusian', 'Bosnian', 'Bulgarian', 'Catalan', 'Chinese', 'Croatian', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 'Finnish', 'French', 'Galician', 'German', 'Greek', 'Hebrew', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 'Italian', 'Japanese', 'Kannada', 'Kazakh', 'Korean', 'Latvian', 'Lithuanian', 'Macedonian', 'Malay', 'Marathi', 'Maori', 'Nepali', 'Norwegian', 'Persian', 'Polish', 'Portuguese', 'Romanian', 'Russian', 'Serbian', 'Slovak', 'Slovenian', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Thai', 'Turkish', 'Ukrainian', 'Urdu',
+    'Vietnamese', 'Welsh'
+];
+
 //globalThis
 const speechSynth = window.speechSynthesis;
 
@@ -91,8 +100,8 @@ const recordMe = () => {
 
                 const formData = new FormData();
                 formData.append('audio', blob); // Append the blob data with a filename
-
-                axios.post(route('chat.speech'), formData, {
+                formData.append('language', selectedLanguage.value);
+                axios.post(route(translateRoute.value), formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -154,7 +163,7 @@ const resetChat = () => {
 
 onBeforeUnmount(() => {
     if (chatHistory.value.length > 0) {
-        axios.post(route('model.create', { chatType: 'voice' }));
+        axios.post(route('model.create', { chatType: 'translate' }));
     }
 });
 </script>
@@ -215,7 +224,16 @@ onBeforeUnmount(() => {
         </template>
 
     </div>
-    <div class="w-full space-x-4 space-y-4">
+    <div class="justify-center w-full space-x-4 space-y-4">
+        <select class="select select-primary" v-model="translateRoute">
+            <option value="translate.from">Translate From</option>
+            <option value="translate.to">Translate To</option>
+        </select>
+        <select class="select select-primary" v-model="selectedLanguage">
+            <template v-for="(lang, i) in languages" :key="i">
+                <option :value="lang" v-html="lang" />
+            </template>
+        </select>
         <button @click.prevent="stopSpeaking()" class="btn btn-info">Stop Speaking</button>
         <button @click.prevent="resetChat()" class="btn btn-warning">Reset</button>
     </div>

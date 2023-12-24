@@ -40,13 +40,32 @@ class HandleInertiaRequests extends Middleware
                 ]);
             },
             'options' => $this->getOptions($request),
+            'chatCount' => $this->countChats(),
+            'showBackground' => $this->showBackground($request),
         ]);
     }
 
     public function getOptions(Request $request)
     {
         $user = $request->user();
-        $options = $user->options ?? ['manc' => 1, 'sarcasm' => 1, 'humour' => 1];
+        $options = $user->options ?? ['manc' => 1, 'sarcasm' => 1, 'humour' => 1, 'background' => 1];
         return $options;
+    }
+
+    public function showBackground(Request $request)
+    {
+        $user = $request->user();
+        $background = $user->options['background'] ?? 1;
+        return $background;
+    }
+
+    public function countChats()
+    {
+        if (auth()->user()) {
+            $count = auth()->user()->chats()->count() ?? 0;
+        } else {
+            $count = 0;
+        }
+        return $count;
     }
 }

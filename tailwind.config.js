@@ -14,7 +14,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                mono: ['Courier', ...defaultTheme.fontFamily.mono],
+                mono: ['JetBrains Mono', ...defaultTheme.fontFamily.mono],
             },
         },
     },
@@ -23,14 +23,14 @@ export default {
         themes: [
             {
                 mytheme: {
-                    "primary": "#4d7c0f",
-                    "secondary": "#1f34f2",
-                    "accent": "#2ad824",
-                    "neutral": "#f3f4f6",
-                    "base-100": "#f2f2f3",
-                    "info": "#9accea",
-                    "success": "#65a30d",
-                    "warning": "#f5db56",
+                    "primary": "#6c00ff",
+                    "secondary": "#eab308",
+                    "accent": "#00a600",
+                    "neutral": "#000608",
+                    "base-100": "#f3fdff",
+                    "info": "#00aed0",
+                    "success": "#00d27b",
+                    "warning": "#f97316",
                     "error": "#dc2626",
                 },
             },
