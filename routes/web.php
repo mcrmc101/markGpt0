@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::controller(ChatController::class)->prefix('chat')->group(function ($router) {
+        $router->get('/', 'showTextChat')->name('chat.show');
         $router->post('/seek-wisdom', 'seekWisdom')->name('wisdom.seek');
         $router->get('/get-new-greeting', 'getNewGreeting')->name('greeting.new');
         $router->get('/clear-chat', 'clearChat')->name('chat.clear');
@@ -47,14 +48,17 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ImageController::class)->prefix('images')->group(function ($router) {
+        $router->get('/', 'showImageGenerator')->name('image.show');
         $router->post('/create-image', 'createImage')->name('image.create');
     });
 
     Route::controller(VoiceController::class)->prefix('voice')->group(function ($router) {
-        $router->post('/chat-speech', 'chatSpeech')->name('chat.speech');
+        $router->get('/', 'showVoiceChat')->name('voice.show');
+        $router->post('/chat-speech', 'chatSpeech')->name('voice.speech');
     });
 
     Route::controller(TranslateController::class)->prefix('translate')->group(function ($router) {
+        $router->get('/', 'showTranslator')->name('translate.show');
         $router->post('/translate-from', 'translateFrom')->name('translate.from');
         $router->post('/translate-to', 'translateTo')->name('translate.to');
     });

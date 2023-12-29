@@ -14,6 +14,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class TranslateController extends Controller
 {
+
+    public function showTranslator()
+    {
+        return Inertia::render('Translator');
+    }
+
     public function translateFrom(Request $request)
     {
 
@@ -79,7 +85,7 @@ class TranslateController extends Controller
 
             //Step 2 Translate using GPT
             Storage::disk('public')->delete($audioFile);
-            $translateText = 'Translate the following from English to ' . $request->input('language') . '. Speak the result: ' . $resultTranscribe->text;
+            $translateText = 'Translate the following from English to ' . $request->input('language') . ': ' . $resultTranscribe->text;
             MarkGPT::setChats(['role' => 'user', 'content' => $translateText]);
             $chats = MarkGPT::getChats();
             $result = OpenAI::chat()->create([

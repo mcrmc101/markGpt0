@@ -24,6 +24,11 @@ class ChatController extends Controller
         return Inertia::render('Dashboard');
     }
 
+    public function showTextChat()
+    {
+        return Inertia::render('TextChat');
+    }
+
     public function clearChat()
     {
         return MarkGPT::clearChat();

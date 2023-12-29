@@ -35,19 +35,20 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    recordVoice.value = false;
-    mediaRecorder.value.stop();
+    if (mediaRecorder.value) {
+        recordVoice.value = false;
+        mediaRecorder.value.stop();
+    }
 });
 
 const thinkingWord = () => {
     var items = [
         'Working',
         'Thinking',
-        'Reticulating Splines',
         'Processing'
     ];
-    //   return items[items.length * Math.random() | 0];
-    return 'Working';
+    return items[items.length * Math.random() | 0];
+    // return 'Working';
 };
 
 const speakMe = (str) => {
@@ -158,11 +159,12 @@ const recordMe = () => {
 
 
 const resetChat = () => {
+    stopSpeaking();
     return router.visit(route('chat.clear'));
 };
 
 onBeforeUnmount(() => {
-    if (chatHistory.value.length > 0) {
+    if (mediaRecorder.value && chatHistory.value.length > 0) {
         axios.post(route('model.create', { chatType: 'translate' }));
     }
 });

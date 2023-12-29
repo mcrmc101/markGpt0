@@ -14,6 +14,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class VoiceController extends Controller
 {
+
+    public function showVoiceChat()
+    {
+        return Inertia::render('VoiceChat');
+    }
+
     public function chatSpeech(Request $request)
     {
 
@@ -36,7 +42,7 @@ class VoiceController extends Controller
     public function seekWisdomQuery($query)
     {
 
-        if (MarkGPT::getChats() == null || count($this->getChats()) < 1) {
+        if (MarkGPT::getChats() == null || count(MarkGPT::getChats()) < 1) {
             $rules = MarkGPT::getRules();
             MarkGPT::setChats($rules);
         }

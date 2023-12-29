@@ -42,8 +42,8 @@ onMounted(() => {
 </script>
 <template>
     <div class="flex flex-wrap items-end justify-center gap-4 md:justify-between">
-        <button class="w-full btn btn-secondary hover:btn-primary active:btn-primary focus:btn-primary"
-            @click.prevent="toggleShowOptions()">
+        <button class="btn btn-secondary hover:btn-primary active:btn-primary focus:btn-primary"
+            @click.prevent="toggleShowOptions()" :class="!showOptions ? 'mx-auto' : ''">
             <GearIcon />
             Options
         </button>

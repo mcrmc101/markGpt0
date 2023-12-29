@@ -15,6 +15,12 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class ImageController extends Controller
 {
 
+
+    public function showImageGenerator()
+    {
+        return Inertia::render('ImageGenerator');
+    }
+
     public function createImage(Request $request)
     {
         $query = $request->input('query');

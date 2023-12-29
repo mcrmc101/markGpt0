@@ -26,19 +26,20 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-    recordVoice.value = false;
-    mediaRecorder.value.stop();
+    if (mediaRecorder.value) {
+        recordVoice.value = false;
+        mediaRecorder.value.stop();
+    }
 });
 
 const thinkingWord = () => {
     var items = [
         'Working',
         'Thinking',
-        'Reticulating Splines',
         'Processing'
     ];
-    //   return items[items.length * Math.random() | 0];
-    return 'Working';
+    return items[items.length * Math.random() | 0];
+    //return 'Working';
 };
 
 const speakMe = (str) => {
@@ -92,7 +93,7 @@ const recordMe = () => {
                 const formData = new FormData();
                 formData.append('audio', blob); // Append the blob data with a filename
 
-                axios.post(route('chat.speech'), formData, {
+                axios.post(route('voice.speech'), formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -149,11 +150,12 @@ const recordMe = () => {
 
 
 const resetChat = () => {
+    stopSpeaking();
     return router.visit(route('chat.clear'));
 };
 
 onBeforeUnmount(() => {
-    if (chatHistory.value.length > 0) {
+    if (mediaRecorder.value && chatHistory.value.length > 0) {
         axios.post(route('model.create', { chatType: 'voice' }));
     }
 });
