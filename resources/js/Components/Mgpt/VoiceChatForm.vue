@@ -4,6 +4,7 @@ import axios from 'axios';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import VueMarkdown from 'vue-markdown-render';
 
+const activeVoice = ref(true);
 const recordVoice = ref(true);
 const stopButton = ref();
 const recordButton = ref();
@@ -42,8 +43,15 @@ const thinkingWord = () => {
     //return 'Working';
 };
 
+
+const toggleActiveVoice = () => {
+    activeVoice.value = !activeVoice.value;
+};
+
 const speakMe = (str) => {
-    return speechSynth.speak(new SpeechSynthesisUtterance(str));
+    if (activeVoice.value) {
+        return speechSynth.speak(new SpeechSynthesisUtterance(str));
+    }
 };
 
 const stopSpeaking = () => {
@@ -219,6 +227,11 @@ onBeforeUnmount(() => {
     </div>
     <div class="w-full space-x-4 space-y-4">
         <button @click.prevent="stopSpeaking()" class="btn btn-info btn-sm">Stop Speaking</button>
+        <button @click.prevent="toggleActiveVoice()" class="btn btn-info btn-sm">
+            <template v-if="activeVoice">Disable</template>
+            <template v-else>Enable</template>
+            Voice
+        </button>
         <button @click.prevent="resetChat()" class="btn btn-warning btn-sm">Reset</button>
     </div>
 </template>

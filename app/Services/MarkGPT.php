@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Session;
 
 class MarkGPT
 {
-    protected $basicOptions = ['manc' => 0, 'sarcasm' => 0, 'humour' => 0, 'background' => 1];
+    protected $basicOptions = ['manc' => 1, 'sarcasm' => 1, 'humour' => 1, 'background' => 1];
 
     public static function getAGreeting()
     {

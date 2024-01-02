@@ -4,6 +4,7 @@ import axios from 'axios';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import VueMarkdown from 'vue-markdown-render';
 
+const activeVoice = ref(true);
 const recordVoice = ref(true);
 const stopButton = ref();
 const recordButton = ref();
@@ -48,11 +49,17 @@ const thinkingWord = () => {
         'Processing'
     ];
     return items[items.length * Math.random() | 0];
-    // return 'Working';
+
+};
+
+const toggleActiveVoice = () => {
+    activeVoice.value = !activeVoice.value;
 };
 
 const speakMe = (str) => {
-    return speechSynth.speak(new SpeechSynthesisUtterance(str));
+    if (activeVoice.value) {
+        return speechSynth.speak(new SpeechSynthesisUtterance(str));
+    }
 };
 
 const stopSpeaking = () => {
@@ -88,8 +95,6 @@ const recordMe = () => {
 
                 stopButton.value.disabled = true;
                 recordButton.value.disabled = false;
-                //     console.log(mediaRecorder.value.state);
-                //     console.log("recorder stopped");
                 mediaRecorder.value.stop();
             };
 
@@ -100,7 +105,7 @@ const recordMe = () => {
                 chunks = [];
 
                 const formData = new FormData();
-                formData.append('audio', blob); // Append the blob data with a filename
+                formData.append('audio', blob);
                 formData.append('language', selectedLanguage.value);
                 axios.post(route(translateRoute.value), formData, {
                     headers: {
@@ -108,18 +113,14 @@ const recordMe = () => {
                     },
                 })
                     .then((res) => {
-                        //      console.log(res.data.message);
                         result.value = res.data.message;
-                        // console.log(res.data.message);
                         speakMe(res.data.message);
                         chatHistory.value.push({ sender: 'user', text: res.data.originalQuestion, type: 'm' });
                         chatHistory.value.push({ sender: 'bot', text: res.data.message, type: 'm' });
-                        //          console.log(chatHistory);
-                        //  questionText.value = '';
+
                         error.value = '';
                         loading.value = false;
-                        // questionText.value = res.data.message.text;
-                        //  sendQuestionToChat();
+
                     })
                     .catch((error) => {
                         console.error(error);
@@ -237,6 +238,11 @@ onBeforeUnmount(() => {
             </template>
         </select>
         <button @click.prevent="stopSpeaking()" class="btn btn-info btn-sm">Stop Speaking</button>
+        <button @click.prevent="toggleActiveVoice()" class="btn btn-info btn-sm">
+            <template v-if="activeVoice">Disable</template>
+            <template v-else>Enable</template>
+            Voice
+        </button>
         <button @click.prevent="resetChat()" class="btn btn-warning btn-sm">Reset</button>
     </div>
 </template>
